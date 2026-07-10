@@ -1,8 +1,10 @@
 // =============================================
-// SCRIPT.JS - NY ANTIKA VOYAGES (10%)
+// SCRIPT.JS - NY ANTIKA VOYAGES (CORRIGÉ)
 // =============================================
 
-const API_URL = window.location.origin + '/api';
+// ✅ URL CORRECTE DU BACKEND SUR RENDER
+const API_URL = 'https://mada-voyage-backend.onrender.com/api';
+
 let currentUser = null;
 let currentToken = null;
 let allTrajets = [];
@@ -17,8 +19,8 @@ function checkAuth() {
         updateUI();
         loadHistorique();
         if (currentUser.role === 'admin') {
-            document.getElementById('adminNav').classList.remove('d-none');
-            document.getElementById('admin').classList.remove('d-none');
+            document.getElementById('adminNav')?.classList.remove('d-none');
+            document.getElementById('admin')?.classList.remove('d-none');
             loadAdminStats();
         }
         return true;
@@ -31,9 +33,11 @@ function updateUI() {
     const userInfo = document.getElementById('userInfo');
     const userNameText = document.getElementById('userNameText');
     if (currentUser) {
-        authLinks.classList.add('d-none');
-        userInfo.classList.remove('d-none');
-        userNameText.textContent = `${currentUser.prenom} ${currentUser.nom}`;
+        if (authLinks) authLinks.classList.add('d-none');
+        if (userInfo) {
+            userInfo.classList.remove('d-none');
+            if (userNameText) userNameText.textContent = `${currentUser.prenom} ${currentUser.nom}`;
+        }
     }
 }
 
@@ -121,10 +125,12 @@ document.getElementById('loginForm')?.addEventListener('submit', async (e) => {
             loadTrajets();
             loadHistorique();
             if (currentUser.role === 'admin') {
-                document.getElementById('adminNav').classList.remove('d-none');
-                document.getElementById('admin').classList.remove('d-none');
+                document.getElementById('adminNav')?.classList.remove('d-none');
+                document.getElementById('admin')?.classList.remove('d-none');
                 loadAdminStats();
             }
+            // Afficher un message de succès
+            alert('✅ Connexion réussie !');
         } else {
             document.getElementById('loginError').textContent = result.error || 'Identifiants incorrects';
         }
@@ -141,10 +147,10 @@ document.getElementById('searchForm')?.addEventListener('submit', async (e) => {
 
 async function searchTrajets() {
     const params = new URLSearchParams();
-    const lieuDepart = document.getElementById('lieuDepart').value.trim();
-    const lieuArrivee = document.getElementById('lieuArrivee').value.trim();
-    const dateDepart = document.getElementById('dateDepart').value;
-    const passagers = document.getElementById('passagers').value || 1;
+    const lieuDepart = document.getElementById('lieuDepart')?.value.trim();
+    const lieuArrivee = document.getElementById('lieuArrivee')?.value.trim();
+    const dateDepart = document.getElementById('dateDepart')?.value;
+    const passagers = document.getElementById('passagers')?.value || 1;
     if (lieuDepart) params.append('lieu_depart', lieuDepart);
     if (lieuArrivee) params.append('lieu_arrivee', lieuArrivee);
     if (dateDepart) params.append('date_depart', dateDepart);
@@ -152,8 +158,8 @@ async function searchTrajets() {
     try {
         const response = await fetch(`${API_URL}/client/recherche?${params}`);
         const trajets = await response.json();
-        allTrajets = trajets;
-        displayResults(trajets);
+        allTrajets = trajets.data || trajets || [];
+        displayResults(allTrajets);
     } catch (error) {
         document.getElementById('resultsContainer').innerHTML = '<div class="alert alert-danger">Erreur de recherche</div>';
     }
@@ -161,6 +167,7 @@ async function searchTrajets() {
 
 function displayResults(trajets) {
     const container = document.getElementById('resultsContainer');
+    if (!container) return;
     if (!trajets || trajets.length === 0) {
         container.innerHTML = `
             <div class="alert alert-info text-center py-4">
@@ -208,9 +215,9 @@ function displayResults(trajets) {
 async function loadTrajets() {
     try {
         const response = await fetch(`${API_URL}/client/trajets`);
-        const trajets = await response.json();
-        allTrajets = trajets;
-        displayResults(trajets);
+        const result = await response.json();
+        allTrajets = result.data || result || [];
+        displayResults(allTrajets);
     } catch (error) {
         console.error('Erreur:', error);
     }
@@ -274,11 +281,13 @@ document.getElementById('confirmReservationBtn')?.addEventListener('click', asyn
 async function loadHistorique() {
     if (!currentUser) return;
     const container = document.getElementById('historiqueContainer');
+    if (!container) return;
     try {
         const response = await fetch(`${API_URL}/client/historique`, {
             headers: { 'Authorization': `Bearer ${currentToken}` }
         });
-        const reservations = await response.json();
+        const result = await response.json();
+        const reservations = result.data || result || [];
         if (!reservations || reservations.length === 0) {
             container.innerHTML = `
                 <div class="alert alert-light text-center py-4">
@@ -295,7 +304,7 @@ async function loadHistorique() {
                         <div class="card border-0 shadow-sm">
                             <div class="card-body">
                                 <div class="d-flex justify-content-between">
-                                    <h6>${r.trajets?.lieu_depart || 'N/A'} → ${r.trajets?.lieu_arrivee || 'N/A'}</h6>
+                                    <h6>${r.trajets?.lieu_depart || r.lieu_depart || 'N/A'} → ${r.trajets?.lieu_arrivee || r.lieu_arrivee || 'N/A'}</h6>
                                     <span class="badge ${r.statut === 'confirmée' ? 'bg-success' : r.statut === 'annulée' ? 'bg-danger' : 'bg-warning'}">
                                         ${r.statut}
                                     </span>
@@ -325,11 +334,13 @@ async function loadAdminStats() {
         const response = await fetch(`${API_URL}/admin/stats`, {
             headers: { 'Authorization': `Bearer ${currentToken}` }
         });
-        const stats = await response.json();
-        document.getElementById('statUsers').textContent = stats.users || 0;
-        document.getElementById('statReservations').textContent = stats.reservations || 0;
-        document.getElementById('statMonthly').textContent = stats.monthlyReservations || 0;
-        document.getElementById('statRevenue').textContent = (stats.revenue || 0).toLocaleString() + ' Ar';
+        const result = await response.json();
+        if (result.success) {
+            document.getElementById('statUsers').textContent = result.users || 0;
+            document.getElementById('statReservations').textContent = result.reservations || 0;
+            document.getElementById('statMonthly').textContent = result.monthlyReservations || 0;
+            document.getElementById('statRevenue').textContent = (result.revenue || 0).toLocaleString() + ' Ar';
+        }
     } catch (error) {
         console.error('Erreur:', error);
     }
