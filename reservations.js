@@ -4,7 +4,9 @@
  * =============================================
  */
 
-const API_URL = window.location.origin + '/api';
+// ✅ URL CORRECTE DU BACKEND SUR RENDER
+const API_URL = 'https://mada-voyage-backend.onrender.com/api';
+
 let currentUser = null;
 let currentToken = null;
 let selectedTrajet = null;
