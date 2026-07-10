@@ -27,23 +27,29 @@ const PORT = process.env.PORT || 3000;
 // MIDDLEWARES
 // =============================================
 
-// CORS Configuration
-const allowedOrigins = [
-    'http://localhost:3000',
-    'http://localhost:5500',
-    'http://127.0.0.1:5500',
-    'https://mada-voyage.vercel.app',
-    'https://mada-voyage-backend.onrender.com',
-    process.env.FRONTEND_URL
-].filter(Boolean);
-
+// ✅ CORS Configuration - CORRIGÉE POUR VERCEL
 app.use(cors({
     origin: function(origin, callback) {
         // Permettre les requêtes sans origin (ex: mobile apps)
         if (!origin) return callback(null, true);
+        
+        // Liste des origines autorisées
+        const allowedOrigins = [
+            'http://localhost:3000',
+            'http://localhost:5500',
+            'http://127.0.0.1:5500',
+            'https://frontend-phi-ashen-15.vercel.app',     // ✅ VOTRE URL VERCEL
+            'https://mada-voyage.vercel.app',
+            'https://mada-voyage-frontend.vercel.app',
+            'https://mada-voyage-backend.onrender.com',
+            process.env.FRONTEND_URL
+        ].filter(Boolean);
+        
+        // Vérifier si l'origine est autorisée
         if (allowedOrigins.indexOf(origin) !== -1 || process.env.NODE_ENV === 'development') {
             callback(null, true);
         } else {
+            console.log(`⚠️ CORS bloqué pour: ${origin}`);
             callback(new Error('CORS non autorisé'));
         }
     },
@@ -92,7 +98,7 @@ app.get('/admin-dashboard.html', (req, res) => {
 });
 
 // =============================================
-// ROUTE DE SANTÉ
+// ROUTE DE SANTÉ - OBLIGATOIRE POUR RENDER
 // =============================================
 
 app.get('/api/health', (req, res) => {
@@ -109,11 +115,24 @@ app.get('/api/health', (req, res) => {
 });
 
 // =============================================
+// ROUTE DE TEST POUR VÉRIFIER LE CORS
+// =============================================
+
+app.get('/test-cors', (req, res) => {
+    res.json({
+        success: true,
+        message: 'CORS fonctionne !',
+        timestamp: new Date().toISOString()
+    });
+});
+
+// =============================================
 // GESTION DES ERREURS
 // =============================================
 
 // 404 - Route non trouvée
 app.use((req, res) => {
+    console.log(`❌ 404: ${req.method} ${req.originalUrl}`);
     res.status(404).json({
         success: false,
         error: 'Route non trouvée',
