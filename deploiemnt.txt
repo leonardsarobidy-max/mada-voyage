@@ -1,0 +1,170 @@
+lien supabases : https://szloosxpvrpcuyfmkavb.supabase.co/rest/v1/
+
+
+Anon public : eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN6bG9vc3hwdnJwY3V5Zm1rYXZiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODM1NTY5ODAsImV4cCI6MjA5OTEzMjk4MH0.qV1PYucsE8RDdpV2zZ_aKgf7F1tf4buklb5cogoWhi0
+Service role : eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN6bG9vc3hwdnJwY3V5Zm1rYXZiIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc4MzU1Njk4MCwiZXhwIjoyMDk5MTMyOTgwfQ.mE-WH6utf2WzunP8bNXsCiL44x13qMNY0T_oZrXf454
+
+
+
+Render : https://mada-voyage.onrender.com/
+
+
+
+
+
+🔗 VOS URLS APRÈS DÉPLOIEMENT
+Voici les URLs que vous allez obtenir après avoir déployé votre projet :
+
+🌐 URLS DE PRODUCTION
+Backend (Render)
+text
+https://mada-voyage.onrender.com
+API complète: https://mada-voyage.onrender.com/api
+
+Frontend (Vercel)
+text
+https://mada-voyage-frontend.vercel.app
+OU selon le nom que vous avez choisi:
+
+text
+https://mada-voyage.vercel.app
+🧪 URLS DE TEST À UTILISER
+Tester le Backend
+bash
+# Santé du serveur
+https://mada-voyage.onrender.com/api/health
+
+# Tous les trajets
+https://mada-voyage.onrender.com/api/client/trajets
+
+# Recherche de trajets
+https://mada-voyage.onrender.com/api/client/recherche?lieu_depart=Antananarivo
+
+# Connexion (POST)
+https://mada-voyage.onrender.com/api/auth/login
+
+# Inscription (POST)
+https://mada-voyage.onrender.com/api/auth/register
+Tester le Frontend
+bash
+# Page d'accueil
+https://mada-voyage-frontend.vercel.app
+# OU
+https://mada-voyage.vercel.app
+
+# Page réservation
+https://mada-voyage-frontend.vercel.app/reservations.html
+
+# Dashboard admin
+https://mada-voyage-frontend.vercel.app/admin-dashboard.html
+📋 COMMENT TROUVER VOS URLS
+Sur Render (Backend)
+text
+1. Connectez-vous à: https://dashboard.render.com
+2. Cliquez sur votre service "mada-voyage"
+3. L'URL est affichée en haut de la page:
+   🔗 https://mada-voyage.onrender.com
+Sur Vercel (Frontend)
+text
+1. Connectez-vous à: https://vercel.com/dashboard
+2. Cliquez sur votre projet
+3. L'URL est affichée:
+   🔗 https://mada-voyage-frontend.vercel.app
+🎯 CE QUE VOUS DEVEZ FAIRE MAINTENANT
+Étape 1: Vérifier que le backend fonctionne
+bash
+# Dans votre navigateur, allez sur :
+https://mada-voyage.onrender.com/api/health
+Si vous voyez:
+
+json
+{
+  "success": true,
+  "status": "✅ OK",
+  ...
+}
+✅ Votre backend fonctionne !
+
+Étape 2: Modifier l'URL dans vos fichiers frontend
+Dans frontend/script.js et frontend/reservations.js :
+
+javascript
+// AVANT (développement local)
+const API_URL = window.location.origin + '/api';
+
+// APRÈS (production)
+const API_URL = 'https://mada-voyage.onrender.com/api';
+Étape 3: Déployer le frontend sur Vercel
+text
+1. Allez sur: https://vercel.com/drop
+2. Glissez votre dossier "frontend"
+3. Attendez le déploiement
+4. ✅ URL: https://mada-voyage-frontend.vercel.app
+Étape 4: Tester l'application complète
+text
+1. Ouvrez: https://mada-voyage-frontend.vercel.app
+2. Inscrivez-vous
+3. Connectez-vous
+4. Recherchez des trajets
+5. Faites une réservation
+📝 RÉCAPITULATIF DES URLS
+Service	URL
+Backend API	https://mada-voyage.onrender.com
+API Health	https://mada-voyage.onrender.com/api/health
+API Trajets	https://mada-voyage.onrender.com/api/client/trajets
+Frontend	https://mada-voyage-frontend.vercel.app
+Frontend Réservations	https://mada-voyage-frontend.vercel.app/reservations.html
+Frontend Admin	https://mada-voyage-frontend.vercel.app/admin-dashboard.html
+🚀 SI VOUS N'AVEZ PAS ENCORE DÉPLOYÉ
+Déployer le Backend (Render)
+text
+1. https://dashboard.render.com
+2. New + > Web Service
+3. Connecter GitHub
+4. Choisir: mada-voyage
+5. Name: mada-voyage
+6. Environment: Node ⬅️ IMPORTANT
+7. Build: npm install
+8. Start: node server.js
+9. Variables d'environnement (voir ci-dessous)
+10. Create Web Service
+Variables d'environnement Render
+text
+NODE_ENV = production
+PORT = 10000
+SUPABASE_URL = https://szloosxpvrpcuymf.kavb.supabase.co
+SUPABASE_ANON_KEY = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+SUPABASE_SERVICE_ROLE_KEY = [votre clé de Supabase]
+JWT_SECRET = ny_antsika_voyages_secret_key_2026_secure
+FRONTEND_URL = https://mada-voyage-frontend.vercel.app
+Déployer le Frontend (Vercel)
+text
+1. https://vercel.com/drop
+2. Glisser le dossier "frontend"
+3. API_URL = https://mada-voyage.onrender.com/api
+4. Deploy
+✅ APRÈS DÉPLOIEMENT
+Vous pourrez accéder à votre site via :
+
+text
+🌐 https://mada-voyage-frontend.vercel.app
+Et votre API via :
+
+text
+🔗 https://mada-voyage.onrender.com/api
+C'est prêt ! Allez sur vos URLs pour tester ! 🚀
+
+
+
+
+
+
+
+
+
+Premier lien :  dans le supabase : https://supabase.com/dashboard/organizations
+deuxiemes lien : dans le github : https://github.com/leonardsarobidy-max/mada-voyage/projects
+trosieme lien : dans vercel : https://vercel.com/leonardsarobidy-maxs-projects/frontend/EeDSYpY6y56cxrG6Fqi7HHr5CREh/source?f=src%2Fadmin-dashboard.html
+Quatriemes  lien le sites web : https://frontend-phi-ashen-15.vercel.app
+cinquieme lien lien renders : https://dashboard.render.com
+sixiemes lien render : https://dashboard.render.com/web/srv-d97kvva8qa3s73eu8qt0

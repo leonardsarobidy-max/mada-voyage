@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Réservation - Ny Antsika Voyages</title>
+    
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* =============================================
+           STYLE RÉSERVATION
+           ============================================= */
+        :root {
+            --primary: #0a2540;
+            --primary-light: #1a4a6b;
+            --secondary: #f4a261;
+            --secondary-dark: #e07c3a;
+            --accent: #2a9d8f;
+            --dark: #1a1a2e;
+            --light: #f8f9fc;
+            --white: #ffffff;
+            --shadow: 0 10px 40px rgba(0,0,0,0.1);
+            --shadow-lg: 0 20px 60px rgba(0,0,0,0.15);
+            --radius: 16px;
+            --transition: all 0.3s ease;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: var(--light);
+            color: var(--dark);
+            overflow-x: hidden;
+        }
+
+        /* Navigation */
+        .navbar-custom {
+            background: rgba(10, 37, 64, 0.97);
+            backdrop-filter: blur(20px);
+            padding: 12px 0;
+            border-bottom: 2px solid var(--secondary);
+            box-shadow: 0 4px 30px rgba(0,0,0,0.2);
+        }
+        .navbar-custom .navbar-brand {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--white) !important;
+        }
+        .navbar-custom .nav-link {
+            color: rgba(255,255,255,0.8) !important;
+            font-weight: 500;
+            padding: 8px 18px !important;
+            border-radius: 30px;
+            transition: var(--transition);
+        }
+        .navbar-custom .nav-link:hover,
+        .navbar-custom .nav-link.active {
+            background: var(--secondary);
+            color: var(--white) !important;
+            transform: translateY(-2px);
+        }
+
+        .logo-ny-antsika {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .logo-ny-antsika .logo-icon-custom {
+            width: 45px;
+            height: 45px;
+            background: var(--secondary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary);
+            font-size: 1.4rem;
+            font-weight: 900;
+            font-family: 'Playfair Display', serif;
+        }
+        .logo-ny-antsika .logo-text {
+            font-family: 'Playfair Display', serif;
+            font-weight: 700;
+            color: var(--white);
+            line-height: 1.1;
+            font-size: 1.4rem;
+        }
+        .logo-ny-antsika .logo-text .sub {
+            display: block;
+            font-size: 0.5rem;
+            font-weight: 300;
+            color: rgba(255,255,255,0.5);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .nav-btn {
+            border-radius: 30px !important;
+            padding: 6px 20px !important;
+            font-weight: 600 !important;
+        }
+        .nav-btn-outline {
+            border: 2px solid var(--secondary) !important;
+            color: var(--white) !important;
+            background: transparent !important;
+        }
+        .nav-btn-outline:hover {
+            background: var(--secondary) !important;
+            transform: translateY(-2px);
+        }
+        .nav-btn-primary {
+            background: var(--secondary) !important;
+            color: var(--primary) !important;
+            border: none !important;
+        }
+        .nav-btn-primary:hover {
+            background: var(--secondary-dark) !important;
+            transform: translateY(-2px);
+        }
+
+        /* Hero Section */
+        .hero-section {
+            background: var(--primary);
+            padding: 60px 0 40px;
+            color: var(--white);
+        }
+        .hero-section h1 {
+            font-family: 'Playfair Display', serif;
+            font-weight: 700;
+        }
+        .hero-section .breadcrumb {
+            background: transparent;
+            padding: 0;
+        }
+        .hero-section .breadcrumb-item a {
+            color: var(--secondary);
+            text-decoration: none;
+        }
+        .hero-section .breadcrumb-item.active {
+            color: rgba(255,255,255,0.6);
+        }
+
+        /* Search Section */
+        .search-section { padding: 40px 0; }
+        .search-card {
+            background: var(--white);
+            border-radius: var(--radius);
+            padding: 30px;
+            box-shadow: var(--shadow);
+        }
+        .search-card .form-control {
+            border-radius: 10px;
+            padding: 10px 16px;
+            border: 2px solid #e9ecef;
+            transition: var(--transition);
+        }
+        .search-card .form-control:focus {
+            border-color: var(--secondary);
+            box-shadow: 0 0 0 4px rgba(244,162,97,0.1);
+        }
+        .search-card .form-label {
+            font-weight: 600;
+            color: var(--primary);
+            font-size: 0.85rem;
+        }
+        .btn-search {
+            background: var(--secondary);
+            color: var(--primary);
+            border: none;
+            border-radius: 10px;
+            padding: 12px 30px;
+            font-weight: 700;
+            transition: var(--transition);
+        }
+        .btn-search:hover {
+            background: var(--secondary-dark);
+            transform: scale(1.02);
+            color: var(--primary);
+        }
+
+        /* Trajet Cards */
+        .trajet-card {
+            border: none;
+            border-radius: var(--radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            cursor: pointer;
+            height: 100%;
+        }
+        .trajet-card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--secondary);
+        }
+        .trajet-card .card-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.1rem;
+            color: var(--primary);
+        }
+        .trajet-card .price {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+        .trajet-card .price small {
+            font-size: 0.8rem;
+            font-weight: 400;
+            color: #6c757d;
+        }
+        .trajet-card .info-item {
+            font-size: 0.9rem;
+            color: #6c757d;
+        }
+        .trajet-card .info-item i {
+            width: 18px;
+            color: var(--primary);
+        }
+
+        /* Details Trajet */
+        .details-section { padding: 40px 0; }
+        .info-item { margin-bottom: 8px; }
+        .info-item i { width: 20px; color: var(--secondary); }
+        .price-display .display-4 { font-family: 'Playfair Display', serif; }
+
+        /* Sieges */
+        .siege-grid {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+        }
+        .siege-grid-header {
+            background: var(--primary);
+            color: var(--white);
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 0.9rem;
+            letter-spacing: 2px;
+        }
+        .siege-grid-body {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 8px;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+        .siege {
+            padding: 8px 4px;
+            border-radius: 6px;
+            text-align: center;
+            font-size: 0.75rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            position: relative;
+            min-height: 35px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .siege.available {
+            background: #d4edda;
+            color: #155724;
+        }
+        .siege.available:hover {
+            transform: scale(1.1);
+            box-shadow: 0 4px 12px rgba(40,167,69,0.3);
+        }
+        .siege.selected {
+            background: var(--secondary);
+            color: var(--white);
+            box-shadow: 0 4px 12px rgba(244,162,97,0.4);
+        }
+        .siege.occupied {
+            background: #f8d7da;
+            color: #721c24;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+        .siege.occupied i {
+            font-size: 0.6rem;
+            margin-left: 2px;
+        }
+        .siege-legend {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            font-size: 0.8rem;
+        }
+        .siege-legend-color {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border-radius: 4px;
+            margin-right: 6px;
+            vertical-align: middle;
+        }
+        .siege-legend-color.available { background: #d4edda; }
+        .siege-legend-color.selected { background: var(--secondary); }
+        .siege-legend-color.occupied { background: #f8d7da; }
+
+        /* Toast */
+        .toast-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+        }
+        .toast-custom {
+            background: var(--white);
+            border-radius: 12px;
+            box-shadow: var(--shadow-lg);
+            border-left: 4px solid var(--secondary);
+            padding: 15px 20px;
+            margin-bottom: 10px;
+            min-width: 300px;
+            animation: slideInRight 0.3s ease;
+        }
+        .toast-custom.success { border-left-color: #28a745; }
+        .toast-custom.error { border-left-color: #dc3545; }
+        .toast-custom.warning { border-left-color: #ffc107; }
+        .toast-custom.info { border-left-color: #17a2b8; }
+
+        @keyframes slideInRight {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .siege-grid-body {
+                grid-template-columns: repeat(5, 1fr);
+            }
+            .hero-section { padding: 40px 0 30px; }
+            .hero-section h1 { font-size: 1.8rem; }
+        }
+        @media (max-width: 480px) {
+            .siege-grid-body {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ===== NAVIGATION ===== -->
+<nav class="navbar navbar-expand-lg navbar-custom sticky-top">
+    <div class="container">
+        <a class="navbar-brand" href="index.html">
+            <span class="logo-ny-antsika">
+                <span class="logo-icon-custom">NA</span>
+                <span class="logo-text">
+                    Ny Antsika
+                    <span class="sub">Voyages Madagascar</span>
+                </span>
+            </span>
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto align-items-lg-center gap-1">
+                <li class="nav-item"><a class="nav-link" href="index.html"><i class="bi bi-house"></i> Accueil</a></li>
+                <li class="nav-item"><a class="nav-link active" href="reservations.html"><i class="bi bi-ticket"></i> Réservation</a></li>
+                <li class="nav-item"><a class="nav-link" href="historique.html"><i class="bi bi-clock-history"></i> Historique</a></li>
+                <li class="nav-item" id="authLinks">
+                    <a class="nav-link nav-btn nav-btn-outline" href="#" id="loginBtn"><i class="bi bi-box-arrow-in-right"></i> Connexion</a>
+                    <a class="nav-link nav-btn nav-btn-primary" href="#" id="registerBtn"><i class="bi bi-person-plus"></i> Inscription</a>
+                </li>
+                <li class="nav-item d-none" id="userInfo">
+                    <span class="nav-link"><i class="bi bi-person-circle"></i> <span id="userNameText"></span></span>
+                    <a class="nav-link nav-btn nav-btn-outline" href="#" id="logoutBtn"><i class="bi bi-box-arrow-right"></i> Déconnexion</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<!-- ===== HERO SECTION ===== -->
+<section class="hero-section">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-md-8">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="index.html">Accueil</a></li>
+                        <li class="breadcrumb-item active">Réservation</li>
+                    </ol>
+                </nav>
+                <h1>Réservez votre voyage</h1>
+                <p class="text-white-50">Trouvez et réservez votre trajet à travers Madagascar</p>
+            </div>
+            <div class="col-md-4 text-end">
+                <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='80' font-size='70'%3E✈️%3C/text%3E%3C/svg%3E" alt="Voyage" style="height:60px;">
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ===== RECHERCHE ===== -->
+<section class="search-section">
+    <div class="container">
+        <div class="search-card">
+            <form id="searchForm">
+                <div class="row g-3">
+                    <div class="col-md-3">
+                        <label class="form-label"><i class="bi bi-geo-alt"></i> Lieu de départ</label>
+                        <input type="text" class="form-control" id="lieuDepart" placeholder="Antananarivo">
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label"><i class="bi bi-pin-map"></i> Lieu d'arrivée</label>
+                        <input type="text" class="form-control" id="lieuArrivee" placeholder="Nosy Be">
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label"><i class="bi bi-calendar3"></i> Date</label>
+                        <input type="date" class="form-control" id="dateDepart">
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label"><i class="bi bi-people"></i> Passagers</label>
+                        <input type="number" class="form-control" id="passagers" value="1" min="1">
+                    </div>
+                    <div class="col-md-2 d-flex align-items-end">
+                        <button type="submit" class="btn-search w-100">
+                            <i class="bi bi-search me-2"></i> Rechercher
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <!-- Résultats -->
+        <div id="trajetsResults" class="mt-4"></div>
+    </div>
+</section>
+
+<!-- ===== DÉTAILS DU TRAJET ===== -->
+<section class="details-section" id="trajetDetailsSection">
+    <div class="container">
+        <div id="trajetDetails">
+            <!-- Rempli dynamiquement -->
+        </div>
+    </div>
+</section>
+
+<!-- ============================================================
+     MODALS
+     ============================================================ -->
+
+<!-- Modal Connexion -->
+<div class="modal fade" id="loginModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><i class="bi bi-box-arrow-in-right me-2" style="color:var(--secondary);"></i>Connexion</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="loginForm">
+                    <div class="mb-3">
+                        <label class="form-label">Email</label>
+                        <input type="email" class="form-control" id="loginEmail" placeholder="votre@email.mg" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Mot de passe</label>
+                        <input type="password" class="form-control" id="loginPassword" placeholder="••••••••" required>
+                    </div>
+                    <div id="loginError" class="text-danger small mb-2"></div>
+                    <button type="submit" class="btn btn-warning w-100">
+                        <i class="bi bi-box-arrow-in-right me-2"></i> Se connecter
+                    </button>
+                </form>
+                <p class="text-center mt-3 small">
+                    Pas encore de compte ? <a href="#" id="switchToRegister" style="color:var(--secondary);">S'inscrire</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Inscription -->
+<div class="modal fade" id="registerModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><i class="bi bi-person-plus me-2" style="color:var(--secondary);"></i>Inscription</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="registerForm">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Nom</label>
+                            <input type="text" class="form-control" id="regNom" placeholder="Rakoto" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Prénom</label>
+                            <input type="text" class="form-control" id="regPrenom" placeholder="Jean" required>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Email</label>
+                        <input type="email" class="form-control" id="regEmail" placeholder="jean@email.mg" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Téléphone</label>
+                        <input type="tel" class="form-control" id="regTelephone" placeholder="034 00 000 01">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Mot de passe</label>
+                        <input type="password" class="form-control" id="regPassword" placeholder="••••••••" required minlength="6">
+                    </div>
+                    <div id="registerError" class="text-danger small mb-2"></div>
+                    <button type="submit" class="btn btn-warning w-100">
+                        <i class="bi bi-person-plus me-2"></i> S'inscrire
+                    </button>
+                </form>
+                <p class="text-center mt-3 small">
+                    Déjà un compte ? <a href="#" id="switchToLogin" style="color:var(--secondary);">Se connecter</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Réservation -->
+<div class="modal fade" id="reservationModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><i class="bi bi-ticket me-2" style="color:var(--secondary);"></i>Réservation</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Trajet info -->
+                <div id="reservationTrajetInfo" class="p-3 bg-light rounded mb-3"></div>
+                
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="form-label"><i class="bi bi-people me-1"></i> Nombre de passagers</label>
+                        <input type="number" class="form-control" id="reservationPassagers" min="1" value="1">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label"><i class="bi bi-grid-3x3-gap me-1"></i> Sélection des sièges</label>
+                        <div id="siegeContainer"></div>
+                    </div>
+                </div>
+                
+                <div class="mt-3 p-3 bg-light rounded">
+                    <div class="row text-center">
+                        <div class="col-4">
+                            <small class="text-muted d-block">Passagers</small>
+                            <span class="fw-bold" id="reservationPassagersCount">1</span>
+                        </div>
+                        <div class="col-4">
+                            <small class="text-muted d-block">Sièges</small>
+                            <span class="fw-bold" id="reservationSiegesCount">Aucun</span>
+                        </div>
+                        <div class="col-4">
+                            <small class="text-muted d-block">Total</small>
+                            <span class="fw-bold text-primary" id="reservationTotal">0 Ar</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <button class="btn btn-warning w-100 mt-3" id="confirmReservationBtn">
+                    <i class="bi bi-check-circle me-2"></i> Confirmer la réservation
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Succès -->
+<div class="modal fade" id="successModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header" style="border-bottom-color: #28a745;">
+                <h5 class="modal-title text-success"><i class="bi bi-check-circle-fill me-2"></i>Réservation confirmée !</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body text-center py-4">
+                <i class="bi bi-check-circle-fill display-1 text-success"></i>
+                <h5 class="mt-3">Votre réservation a été confirmée</h5>
+                <div class="card bg-light mt-3">
+                    <div class="card-body text-start">
+                        <p><strong>Référence:</strong> <span id="successReservationId">N/A</span></p>
+                        <p><strong>Trajet:</strong> <span id="successTrajet">N/A</span></p>
+                        <p><strong>Date:</strong> <span id="successDate">N/A</span></p>
+                        <p><strong>Passagers:</strong> <span id="successPassagers">N/A</span></p>
+                        <p><strong>Total:</strong> <span id="successTotal">0 Ar</span></p>
+                    </div>
+                </div>
+                <div class="mt-3">
+                    <a href="historique.html" class="btn btn-outline-primary">
+                        <i class="bi bi-clock-history me-2"></i> Voir mes réservations
+                    </a>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Toast Container -->
+<div class="toast-container" id="toastContainer"></div>
+
+<!-- ============================================================
+     SCRIPTS
+     ============================================================ -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="reservations.js"></script>
+
+</body>
+</html>
