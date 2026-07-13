@@ -12,10 +12,10 @@ const app = express();
 // IMPORT DES ROUTES - CHEMINS CORRECTS
 // =============================================
 
-// ✅ CORRIGÉ - Utilise "itinéraires" au lieu de "routes"
-const authRoutes = require('./backend/itinéraires/authRoutes');
-const clientRoutes = require('./backend/itinéraires/clientRoutes');
-const adminRoutes = require('./backend/itinéraires/adminRoutes');
+// ✅ CORRIGÉ - Utilise "Itinéraires" avec majuscule
+const authRoutes = require('./backend/Itinéraires/authRoutes');
+const clientRoutes = require('./backend/Itinéraires/clientRoutes');
+const adminRoutes = require('./backend/Itinéraires/adminRoutes');
 
 // =============================================
 // MIDDLEWARES
