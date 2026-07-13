@@ -12,10 +12,10 @@ const app = express();
 // IMPORT DES ROUTES - CHEMINS CORRECTS
 // =============================================
 
-// ✅ BON - depuis la racine, ./backend/ existe
-const authRoutes = require('./backend/routes/authRoutes');
-const clientRoutes = require('./backend/routes/clientRoutes');
-const adminRoutes = require('./backend/routes/adminRoutes');
+// ✅ CORRIGÉ - Utilise "itinéraires" au lieu de "routes"
+const authRoutes = require('./backend/itinéraires/authRoutes');
+const clientRoutes = require('./backend/itinéraires/clientRoutes');
+const adminRoutes = require('./backend/itinéraires/adminRoutes');
 
 // =============================================
 // MIDDLEWARES
@@ -71,7 +71,32 @@ app.get('/', (req, res) => {
     res.json({
         message: '🚀 API Ny Antsika Voyages',
         version: '1.0.0',
-        status: 'running'
+        status: 'running',
+        endpoints: {
+            test: '/test',
+            health: '/api/health'
+        }
+    });
+});
+
+// =============================================
+// GESTION 404
+// =============================================
+
+app.use((req, res) => {
+    res.status(404).json({
+        success: false,
+        error: 'Route non trouvée',
+        path: req.originalUrl
+    });
+});
+
+app.use((err, req, res, next) => {
+    console.error('❌ Erreur serveur:', err);
+    res.status(500).json({
+        success: false,
+        error: 'Erreur serveur',
+        message: err.message || 'Une erreur est survenue'
     });
 });
 
