@@ -1,5 +1,5 @@
 // =============================================
-// SERVER.JS - CHEMINS AVEC MAJUSCULES
+// SERVER.JS - VERSION FINALE ET CORRIGÉE
 // =============================================
 
 const express = require('express');
@@ -12,7 +12,6 @@ const app = express();
 // IMPORT DES ROUTES - CHEMINS AVEC MAJUSCULES
 // =============================================
 
-// ✅ Backend (B majuscule) / Itinéraires (I majuscule)
 const authRoutes = require('./Backend/Itinéraires/authRoutes');
 const clientRoutes = require('./Backend/Itinéraires/clientRoutes');
 const adminRoutes = require('./Backend/Itinéraires/adminRoutes');
@@ -28,6 +27,7 @@ app.use(cors({
 }));
 
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 // =============================================
 // ROUTES API
@@ -105,7 +105,7 @@ app.use((err, req, res, next) => {
 });
 
 // =============================================
-// EXPORTATION POUR VERCEL
+// EXPORTATION
 // =============================================
 
 module.exports = app;
