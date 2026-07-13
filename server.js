@@ -1,5 +1,5 @@
 // =============================================
-// SERVER.JS - VERSION MINIMALE POUR VERCEL
+// SERVER.JS - AVEC ROUTE /api
 // =============================================
 
 const express = require('express');
@@ -7,10 +7,6 @@ const cors = require('cors');
 require('dotenv').config();
 
 const app = express();
-
-// =============================================
-// MIDDLEWARES
-// =============================================
 
 app.use(cors({
     origin: '*',
@@ -21,29 +17,53 @@ app.use(cors({
 app.use(express.json());
 
 // =============================================
-// IMPORT DES ROUTES
+// ROUTES
 // =============================================
 
 const authRoutes = require('./Backend/Itinéraires/authRoutes');
 const clientRoutes = require('./Backend/Itinéraires/clientRoutes');
 const adminRoutes = require('./Backend/Itinéraires/adminRoutes');
 
-// =============================================
-// ROUTES API
-// =============================================
-
 app.use('/api/auth', authRoutes);
 app.use('/api/client', clientRoutes);
 app.use('/api/admin', adminRoutes);
 
 // =============================================
-// ROUTE D'ACCUEIL - SIMPLE
+// ✅ AJOUTER CETTE ROUTE POUR /api
+// =============================================
+
+app.get('/api', (req, res) => {
+    res.json({
+        success: true,
+        message: '✅ API Ny Antsika Voyages',
+        version: '1.0.0',
+        status: 'running',
+        endpoints: {
+            auth: '/api/auth',
+            client: '/api/client',
+            admin: '/api/admin',
+            auth_test: '/api/auth/test',
+            client_test: '/api/client/test',
+            admin_test: '/api/admin/test'
+        }
+    });
+});
+
+// =============================================
+// ROUTE D'ACCUEIL
 // =============================================
 
 app.get('/', (req, res) => {
     res.json({
         message: '🚀 API Ny Antsika Voyages',
-        status: 'running'
+        version: '1.0.0',
+        status: 'running',
+        endpoints: {
+            api: '/api',
+            auth: '/api/auth',
+            client: '/api/client',
+            admin: '/api/admin'
+        }
     });
 });
 
@@ -71,9 +91,5 @@ app.use((err, req, res, next) => {
         message: err.message || 'Une erreur est survenue'
     });
 });
-
-// =============================================
-// EXPORTATION
-// =============================================
 
 module.exports = app;
