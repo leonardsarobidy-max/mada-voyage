@@ -1,5 +1,5 @@
 // =============================================
-// SERVER.JS - VERSION ULTRA-SIMPLE POUR TEST
+// SERVER.JS - VERSION MINIMALE POUR VERCEL
 // =============================================
 
 const express = require('express');
@@ -21,45 +21,29 @@ app.use(cors({
 app.use(express.json());
 
 // =============================================
-// ROUTE DE TEST - LA PLUS SIMPLE
+// IMPORT DES ROUTES
 // =============================================
 
-app.get('/test', (req, res) => {
-    res.json({
-        success: true,
-        message: '✅ Le serveur fonctionne !',
-        timestamp: new Date().toISOString(),
-        environment: process.env.NODE_ENV || 'development'
-    });
-});
+const authRoutes = require('./Backend/Itinéraires/authRoutes');
+const clientRoutes = require('./Backend/Itinéraires/clientRoutes');
+const adminRoutes = require('./Backend/Itinéraires/adminRoutes');
 
 // =============================================
-// ROUTE DE SANTÉ
+// ROUTES API
 // =============================================
 
-app.get('/api/health', (req, res) => {
-    res.json({
-        success: true,
-        status: '✅ OK',
-        timestamp: new Date().toISOString(),
-        environment: process.env.NODE_ENV || 'development',
-        supabase_url: process.env.SUPABASE_URL ? '✅ Configuré' : '❌ Non configuré'
-    });
-});
+app.use('/api/auth', authRoutes);
+app.use('/api/client', clientRoutes);
+app.use('/api/admin', adminRoutes);
 
 // =============================================
-// ROUTE D'ACCUEIL
+// ROUTE D'ACCUEIL - SIMPLE
 // =============================================
 
 app.get('/', (req, res) => {
     res.json({
         message: '🚀 API Ny Antsika Voyages',
-        version: '1.0.0',
-        status: 'running',
-        endpoints: {
-            test: '/test',
-            health: '/api/health'
-        }
+        status: 'running'
     });
 });
 
