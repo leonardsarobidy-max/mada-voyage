@@ -8,6 +8,10 @@ require('dotenv').config();
 
 const app = express();
 
+// =============================================
+// MIDDLEWARES
+// =============================================
+
 app.use(cors({
     origin: '*',
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
@@ -41,10 +45,7 @@ app.get('/api', (req, res) => {
         endpoints: {
             auth: '/api/auth',
             client: '/api/client',
-            admin: '/api/admin',
-            auth_test: '/api/auth/test',
-            client_test: '/api/client/test',
-            admin_test: '/api/admin/test'
+            admin: '/api/admin'
         }
     });
 });
