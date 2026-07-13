@@ -13,9 +13,9 @@ const app = express();
 // =============================================
 
 // ✅ CORRIGÉ - Utilise "Itinéraires" avec majuscule
-const authRoutes = require('./backend/Itinéraires/authRoutes');
-const clientRoutes = require('./backend/Itinéraires/clientRoutes');
-const adminRoutes = require('./backend/Itinéraires/adminRoutes');
+const authRoutes = require('./Backend/Itinéraires/authRoutes');
+const clientRoutes = require('./Backend/Itinéraires/clientRoutes');
+const adminRoutes = require('./Backend/Itinéraires/adminRoutes');
 
 // =============================================
 // MIDDLEWARES
