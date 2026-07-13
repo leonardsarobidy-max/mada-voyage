@@ -24,6 +24,10 @@
       "dest": "/server.js"
     },
     {
+      "src": "/test",
+      "dest": "/server.js"
+    },
+    {
       "src": "/",
       "dest": "/frontend/index.html"
     },
