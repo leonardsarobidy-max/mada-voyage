@@ -6,8 +6,7 @@ const express = require('express');
 const router = express.Router();
 const { body, validationResult } = require('express-validator');
 
-// ✅ IMPORTATION CORRECTE
-const { supabase } = require('../config/database');
+const { supabase } = require('../Config/database');
 
 // =============================================
 // ROUTE DE TEST
@@ -16,13 +15,13 @@ const { supabase } = require('../config/database');
 router.get('/test', (req, res) => {
     res.json({
         success: true,
-        message: '✅ Route admin/test fonctionne !',
+        message: '✅ Route admin fonctionne !',
         timestamp: new Date().toISOString()
     });
 });
 
 // =============================================
-// 1. STATISTIQUES DASHBOARD - COMPLÈTES
+// 1. STATISTIQUES DASHBOARD
 // =============================================
 
 router.get('/stats', async (req, res) => {
@@ -88,21 +87,6 @@ router.get('/stats', async (req, res) => {
 
         if (vehiculesError) throw vehiculesError;
 
-        // Coopératives
-        const { count: cooperativesCount, error: cooperativesError } = await supabase
-            .from('cooperatives')
-            .select('*', { count: 'exact', head: true });
-
-        if (cooperativesError) throw cooperativesError;
-
-        // Réservations par statut
-        const { data: statusStats, error: statusError } = await supabase
-            .from('reservations')
-            .select('statut, count')
-            .group('statut');
-
-        if (statusError) throw statusError;
-
         res.json({
             success: true,
             users: usersCount || 0,
@@ -111,9 +95,7 @@ router.get('/stats', async (req, res) => {
             revenue: totalRevenue,
             trajetsDisponibles: trajetsCount || 0,
             reservationsEnAttente: pendingCount || 0,
-            vehiculesDisponibles: vehiculesCount || 0,
-            cooperatives: cooperativesCount || 0,
-            statusStats: statusStats || []
+            vehiculesDisponibles: vehiculesCount || 0
         });
 
     } catch (error) {
@@ -139,7 +121,6 @@ router.get('/trajets', async (req, res) => {
             .from('trajets')
             .select('*', { count: 'exact' });
 
-        // Filtres
         if (search) {
             query = query.or(`lieu_depart.ilike.%${search}%,lieu_arrivee.ilike.%${search}%`);
         }
@@ -156,7 +137,6 @@ router.get('/trajets', async (req, res) => {
             query = query.lte('date_depart', date_fin);
         }
 
-        // Pagination
         const offset = (parseInt(page) - 1) * parseInt(limit);
         query = query
             .order('date_depart', { ascending: false })
@@ -195,7 +175,6 @@ router.post('/trajets', [
     body('places_totales').isInt({ min: 1 }).withMessage('Places totales invalides')
 ], async (req, res) => {
     try {
-        // Validation
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
             return res.status(400).json({
@@ -219,7 +198,8 @@ router.post('/trajets', [
             description
         } = req.body;
 
-        const placesDispo = places_disponibles || places_totales || 15;
+        const placesTotal = parseInt(places_totales) || 15;
+        const placesDispo = parseInt(places_disponibles) || placesTotal;
 
         const { data, error } = await supabase
             .from('trajets')
@@ -232,8 +212,8 @@ router.post('/trajets', [
                 heure_depart: heure_depart || '08:00:00',
                 heure_arrivee: heure_arrivee || null,
                 prix: parseFloat(prix),
-                places_totales: parseInt(places_totales) || 15,
-                places_disponibles: parseInt(placesDispo),
+                places_totales: placesTotal,
+                places_disponibles: placesDispo,
                 vehicule_id: vehicule_id || null,
                 description: description || null,
                 disponible: true,
@@ -537,7 +517,8 @@ router.put('/reservations/:id/annuler', async (req, res) => {
 
         res.json({
             success: true,
-            message: 'Réservation annulée avec succès'
+            message: 'Réservation annulée avec succès',
+            reservation_id: id
         });
 
     } catch (error) {
@@ -814,67 +795,6 @@ router.delete('/cooperatives/:id', async (req, res) => {
 
     } catch (error) {
         console.error('Erreur suppression coopérative:', error);
-        res.status(500).json({
-            success: false,
-            error: error.message
-        });
-    }
-});
-
-// =============================================
-// 6. EXPORTATION
-// =============================================
-
-// 6.1 Exporter les réservations (CSV)
-router.get('/export/reservations', async (req, res) => {
-    try {
-        const { date_debut, date_fin } = req.query;
-
-        let query = supabase
-            .from('reservations')
-            .select(`
-                id,
-                date_reservation,
-                nombre_passagers,
-                montant_total,
-                statut,
-                users:user_id (nom, prenom, email),
-                trajets:trajet_id (lieu_depart, lieu_arrivee, date_depart)
-            `);
-
-        if (date_debut) {
-            query = query.gte('date_reservation', date_debut);
-        }
-
-        if (date_fin) {
-            query = query.lte('date_reservation', date_fin);
-        }
-
-        const { data, error } = await query
-            .order('date_reservation', { ascending: false });
-
-        if (error) throw error;
-
-        // Format CSV
-        const headers = ['ID', 'Date', 'Client', 'Trajet', 'Passagers', 'Montant', 'Statut'];
-        const rows = (data || []).map(r => [
-            r.id,
-            new Date(r.date_reservation).toLocaleDateString('fr-FR'),
-            `${r.users?.prenom || ''} ${r.users?.nom || ''}`.trim() || 'N/A',
-            `${r.trajets?.lieu_depart || ''} → ${r.trajets?.lieu_arrivee || ''}`,
-            r.nombre_passagers || 0,
-            r.montant_total || 0,
-            r.statut || 'N/A'
-        ]);
-
-        const csv = [headers.join(','), ...rows.map(row => row.join(','))].join('\n');
-
-        res.setHeader('Content-Type', 'text/csv; charset=utf-8');
-        res.setHeader('Content-Disposition', `attachment; filename=reservations_${new Date().toISOString().split('T')[0]}.csv`);
-        res.send('\uFEFF' + csv); // BOM pour Excel
-
-    } catch (error) {
-        console.error('Erreur export CSV:', error);
         res.status(500).json({
             success: false,
             error: error.message
