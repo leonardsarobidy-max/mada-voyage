@@ -1,5 +1,5 @@
 // =============================================
-// SERVER.JS - VERSION FINALE ET CORRIGÉE
+// SERVER.JS - VERSION ULTRA-SIMPLE POUR TEST
 // =============================================
 
 const express = require('express');
@@ -7,14 +7,6 @@ const cors = require('cors');
 require('dotenv').config();
 
 const app = express();
-
-// =============================================
-// IMPORT DES ROUTES - CHEMINS AVEC MAJUSCULES
-// =============================================
-
-const authRoutes = require('./Backend/Itinéraires/authRoutes');
-const clientRoutes = require('./Backend/Itinéraires/clientRoutes');
-const adminRoutes = require('./Backend/Itinéraires/adminRoutes');
 
 // =============================================
 // MIDDLEWARES
@@ -27,25 +19,17 @@ app.use(cors({
 }));
 
 app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
 
 // =============================================
-// ROUTES API
-// =============================================
-
-app.use('/api/auth', authRoutes);
-app.use('/api/client', clientRoutes);
-app.use('/api/admin', adminRoutes);
-
-// =============================================
-// ROUTE DE TEST
+// ROUTE DE TEST - LA PLUS SIMPLE
 // =============================================
 
 app.get('/test', (req, res) => {
     res.json({
         success: true,
         message: '✅ Le serveur fonctionne !',
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
+        environment: process.env.NODE_ENV || 'development'
     });
 });
 
