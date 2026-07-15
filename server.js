@@ -1,6 +1,5 @@
 // =============================================
-// SERVER.JS - NY ANTSIKA VOYAGES
-// Structure: backend/routes/ (sans majuscules ni accents)
+// SERVER.JS - VERSION MINIMALISTE DE TEST
 // =============================================
 
 const express = require('express');
@@ -9,37 +8,11 @@ require('dotenv').config();
 
 const app = express();
 
-// =============================================
-// IMPORT DES ROUTES - CHEMINS CORRECTS
-// =============================================
-
-const authRoutes = require('./backend/routes/authRoutes');
-const clientRoutes = require('./backend/routes/clientRoutes');
-const adminRoutes = require('./backend/routes/adminRoutes');
-
-// =============================================
-// MIDDLEWARES
-// =============================================
-
-app.use(cors({
-    origin: '*',
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization']
-}));
-
+app.use(cors());
 app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
 
 // =============================================
-// ROUTES API
-// =============================================
-
-app.use('/api/auth', authRoutes);
-app.use('/api/client', clientRoutes);
-app.use('/api/admin', adminRoutes);
-
-// =============================================
-// ROUTE DE TEST - POUR DIAGNOSTIC
+// ROUTE DE TEST UNIQUE
 // =============================================
 
 app.get('/test', (req, res) => {
@@ -50,66 +23,19 @@ app.get('/test', (req, res) => {
     });
 });
 
-// =============================================
-// ROUTE DE SANTÉ - OBLIGATOIRE
-// =============================================
-
 app.get('/api/health', (req, res) => {
     res.json({
         success: true,
         status: '✅ OK',
-        timestamp: new Date().toISOString(),
-        environment: process.env.NODE_ENV || 'development',
-        supabase_url: process.env.SUPABASE_URL ? '✅ Configuré' : '❌ Non configuré'
+        timestamp: new Date().toISOString()
     });
 });
-
-// =============================================
-// ROUTE D'ACCUEIL
-// =============================================
 
 app.get('/', (req, res) => {
     res.json({
         message: '🚀 API Ny Antsika Voyages',
-        version: '1.0.0',
-        status: 'running',
-        endpoints: {
-            test: '/test',
-            health: '/api/health',
-            auth: '/api/auth',
-            client: '/api/client',
-            admin: '/api/admin'
-        }
+        status: 'running'
     });
 });
-
-// =============================================
-// GESTION 404
-// =============================================
-
-app.use((req, res) => {
-    res.status(404).json({
-        success: false,
-        error: 'Route non trouvée',
-        path: req.originalUrl
-    });
-});
-
-// =============================================
-// GESTION 500
-// =============================================
-
-app.use((err, req, res, next) => {
-    console.error('❌ Erreur serveur:', err);
-    res.status(500).json({
-        success: false,
-        error: 'Erreur serveur',
-        message: err.message || 'Une erreur est survenue'
-    });
-});
-
-// =============================================
-// EXPORTATION
-// =============================================
 
 module.exports = app;
