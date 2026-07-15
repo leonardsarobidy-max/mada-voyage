@@ -1,5 +1,5 @@
 // =============================================
-// SERVER.JS - VERSION MINIMALISTE DE TEST
+// SERVER.JS - VERSION SIMPLIFIÉE
 // =============================================
 
 const express = require('express');
@@ -12,7 +12,38 @@ app.use(cors());
 app.use(express.json());
 
 // =============================================
-// ROUTE DE TEST UNIQUE
+// ROUTES
+// =============================================
+
+// ✅ Routes auth
+app.get('/api/auth/test', (req, res) => {
+    res.json({
+        success: true,
+        message: '✅ Route auth fonctionne !',
+        timestamp: new Date().toISOString()
+    });
+});
+
+// ✅ Routes client
+app.get('/api/client/test', (req, res) => {
+    res.json({
+        success: true,
+        message: '✅ Route client fonctionne !',
+        timestamp: new Date().toISOString()
+    });
+});
+
+// ✅ Routes admin
+app.get('/api/admin/test', (req, res) => {
+    res.json({
+        success: true,
+        message: '✅ Route admin fonctionne !',
+        timestamp: new Date().toISOString()
+    });
+});
+
+// =============================================
+// TESTS
 // =============================================
 
 app.get('/test', (req, res) => {
@@ -34,7 +65,26 @@ app.get('/api/health', (req, res) => {
 app.get('/', (req, res) => {
     res.json({
         message: '🚀 API Ny Antsika Voyages',
-        status: 'running'
+        status: 'running',
+        endpoints: {
+            test: '/test',
+            health: '/api/health',
+            auth: '/api/auth/test',
+            client: '/api/client/test',
+            admin: '/api/admin/test'
+        }
+    });
+});
+
+// =============================================
+// GESTION 404
+// =============================================
+
+app.use((req, res) => {
+    res.status(404).json({
+        success: false,
+        error: 'Route non trouvée',
+        path: req.originalUrl
     });
 });
 
