@@ -8,7 +8,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { body, validationResult } = require('express-validator');
 
-const { supabase } = require('../Config/database');
+const { supabase } = require('../config/database');
 
 // =============================================
 // ROUTE DE TEST
@@ -30,11 +30,9 @@ router.post('/register', [
     body('email').isEmail().withMessage('Email invalide'),
     body('password').isLength({ min: 6 }).withMessage('Mot de passe: min 6 caractères'),
     body('nom').notEmpty().withMessage('Le nom est obligatoire'),
-    body('prenom').notEmpty().withMessage('Le prénom est obligatoire'),
-    body('telephone').optional().isString().withMessage('Téléphone invalide')
+    body('prenom').notEmpty().withMessage('Le prénom est obligatoire')
 ], async (req, res) => {
     try {
-        // Vérification des erreurs de validation
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
             return res.status(400).json({
@@ -45,20 +43,12 @@ router.post('/register', [
 
         const { email, password, nom, prenom, telephone } = req.body;
 
-        // Vérifier si l'utilisateur existe déjà
+        // Vérifier si l'utilisateur existe
         const { data: existing, error: checkError } = await supabase
             .from('users')
             .select('id, email')
             .eq('email', email)
             .single();
-
-        if (checkError && checkError.code !== 'PGRST116') {
-            console.error('Erreur vérification:', checkError);
-            return res.status(500).json({
-                success: false,
-                error: 'Erreur lors de la vérification'
-            });
-        }
 
         if (existing) {
             return res.status(400).json({
@@ -101,15 +91,7 @@ router.post('/register', [
         res.status(201).json({
             success: true,
             message: 'Inscription réussie',
-            user: {
-                id: user.id,
-                email: user.email,
-                nom: user.nom,
-                prenom: user.prenom,
-                telephone: user.telephone,
-                role: user.role,
-                created_at: user.created_at
-            }
+            user
         });
 
     } catch (error) {
@@ -167,8 +149,7 @@ router.post('/login', [
         if (user.status === 'suspendu' || user.status === 'inactif') {
             return res.status(403).json({
                 success: false,
-                error: 'Compte inactif',
-                message: 'Votre compte est inactif. Veuillez contacter l\'administrateur.'
+                error: 'Compte inactif'
             });
         }
 
@@ -189,7 +170,6 @@ router.post('/login', [
             .update({ updated_at: new Date().toISOString() })
             .eq('id', user.id);
 
-        // Retourner les données (sans le mot de passe)
         const { password: _, ...userData } = user;
 
         console.log(`🔐 Connexion: ${email} (${user.role})`);
@@ -198,8 +178,7 @@ router.post('/login', [
             success: true,
             message: 'Connexion réussie',
             token,
-            user: userData,
-            expires_in: '7d'
+            user: userData
         });
 
     } catch (error) {
@@ -207,199 +186,6 @@ router.post('/login', [
         res.status(500).json({
             success: false,
             error: 'Erreur lors de la connexion'
-        });
-    }
-});
-
-// =============================================
-// VÉRIFICATION DU TOKEN
-// =============================================
-
-router.get('/verify', async (req, res) => {
-    try {
-        const token = req.headers.authorization?.replace('Bearer ', '');
-        
-        if (!token) {
-            return res.status(401).json({
-                success: false,
-                valid: false,
-                error: 'Token manquant'
-            });
-        }
-
-        // Vérifier le token
-        const decoded = jwt.verify(token, process.env.JWT_SECRET || 'default_secret');
-        
-        if (!decoded || !decoded.id) {
-            return res.status(401).json({
-                success: false,
-                valid: false,
-                error: 'Token invalide'
-            });
-        }
-
-        // Vérifier l'utilisateur
-        const { data: user, error } = await supabase
-            .from('users')
-            .select('id, email, nom, prenom, role, status')
-            .eq('id', decoded.id)
-            .single();
-
-        if (error || !user) {
-            return res.status(401).json({
-                success: false,
-                valid: false,
-                error: 'Utilisateur non trouvé'
-            });
-        }
-
-        if (user.status === 'suspendu' || user.status === 'inactif') {
-            return res.status(403).json({
-                success: false,
-                valid: false,
-                error: 'Compte inactif'
-            });
-        }
-
-        res.json({
-            success: true,
-            valid: true,
-            user: {
-                id: user.id,
-                email: user.email,
-                nom: user.nom,
-                prenom: user.prenom,
-                role: user.role
-            }
-        });
-
-    } catch (error) {
-        if (error.name === 'TokenExpiredError') {
-            return res.status(401).json({
-                success: false,
-                valid: false,
-                error: 'Token expiré'
-            });
-        }
-        
-        console.error('Erreur vérification:', error);
-        res.status(500).json({
-            success: false,
-            valid: false,
-            error: 'Erreur lors de la vérification'
-        });
-    }
-});
-
-// =============================================
-// RAFRAÎCHISSEMENT DU TOKEN
-// =============================================
-
-router.post('/refresh-token', async (req, res) => {
-    try {
-        const { token } = req.body;
-
-        if (!token) {
-            return res.status(400).json({
-                success: false,
-                error: 'Token requis'
-            });
-        }
-
-        // Vérifier l'ancien token
-        const decoded = jwt.verify(token, process.env.JWT_SECRET || 'default_secret');
-        
-        if (!decoded || !decoded.id) {
-            return res.status(401).json({
-                success: false,
-                error: 'Token invalide'
-            });
-        }
-
-        // Vérifier l'utilisateur
-        const { data: user, error } = await supabase
-            .from('users')
-            .select('id, email, role')
-            .eq('id', decoded.id)
-            .single();
-
-        if (error || !user) {
-            return res.status(401).json({
-                success: false,
-                error: 'Utilisateur non trouvé'
-            });
-        }
-
-        // Générer un nouveau token
-        const newToken = jwt.sign(
-            {
-                id: user.id,
-                email: user.email,
-                role: user.role
-            },
-            process.env.JWT_SECRET || 'default_secret',
-            { expiresIn: '7d' }
-        );
-
-        res.json({
-            success: true,
-            token: newToken,
-            expires_in: '7d'
-        });
-
-    } catch (error) {
-        if (error.name === 'TokenExpiredError') {
-            return res.status(401).json({
-                success: false,
-                error: 'Token expiré'
-            });
-        }
-        
-        console.error('Erreur refresh:', error);
-        res.status(500).json({
-            success: false,
-            error: 'Erreur lors du rafraîchissement'
-        });
-    }
-});
-
-// =============================================
-// DÉCONNEXION
-// =============================================
-
-router.post('/logout', async (req, res) => {
-    try {
-        const token = req.headers.authorization?.replace('Bearer ', '');
-        
-        if (token) {
-            try {
-                const decoded = jwt.decode(token);
-                if (decoded && decoded.id) {
-                    await supabase
-                        .from('token_blacklist')
-                        .insert([{
-                            token: token,
-                            user_id: decoded.id,
-                            revoked_at: new Date().toISOString()
-                        }]);
-                }
-            } catch (error) {
-                console.error('Erreur blacklist:', error);
-            }
-        }
-
-        console.log('👋 Déconnexion réussie');
-
-        res.json({
-            success: true,
-            message: 'Déconnexion réussie'
-        });
-
-    } catch (error) {
-        console.error('Erreur déconnexion:', error);
-        res.status(500).json({
-            success: false,
-            error: 'Erreur lors de la déconnexion'
         });
     }
 });
