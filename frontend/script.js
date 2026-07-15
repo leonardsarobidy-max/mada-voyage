@@ -3,7 +3,7 @@
 // =============================================
 
 // ✅ URL CORRECTE DU BACKEND (VERSION MODIFIÉE)
-const API_URL = 'https://mada-voyage-1kua7qcyz-leonardsarobidy-maxs-projects.vercel.app/api';
+const API_URL = 'https://mada-voyage-qr7hmd403-leonardsarobidy-maxs-projects.vercel.app/api';
 
 let currentUser = null;
 let currentToken = null;
