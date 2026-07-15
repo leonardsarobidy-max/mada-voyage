@@ -1,5 +1,6 @@
 // =============================================
-// SERVER.JS - AVEC ROUTE /api
+// SERVER.JS - NY ANTSIKA VOYAGES
+// Structure: backend/routes/ (sans majuscules ni accents)
 // =============================================
 
 const express = require('express');
@@ -7,6 +8,14 @@ const cors = require('cors');
 require('dotenv').config();
 
 const app = express();
+
+// =============================================
+// IMPORT DES ROUTES - CHEMINS CORRECTS
+// =============================================
+
+const authRoutes = require('./backend/routes/authRoutes');
+const clientRoutes = require('./backend/routes/clientRoutes');
+const adminRoutes = require('./backend/routes/adminRoutes');
 
 // =============================================
 // MIDDLEWARES
@@ -19,34 +28,39 @@ app.use(cors({
 }));
 
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 // =============================================
-// ROUTES
+// ROUTES API
 // =============================================
-
-const authRoutes = require('./Backend/Itinéraires/authRoutes');
-const clientRoutes = require('./Backend/Itinéraires/clientRoutes');
-const adminRoutes = require('./Backend/Itinéraires/adminRoutes');
 
 app.use('/api/auth', authRoutes);
 app.use('/api/client', clientRoutes);
 app.use('/api/admin', adminRoutes);
 
 // =============================================
-// ✅ AJOUTER CETTE ROUTE POUR /api
+// ROUTE DE TEST - POUR DIAGNOSTIC
 // =============================================
 
-app.get('/api', (req, res) => {
+app.get('/test', (req, res) => {
     res.json({
         success: true,
-        message: '✅ API Ny Antsika Voyages',
-        version: '1.0.0',
-        status: 'running',
-        endpoints: {
-            auth: '/api/auth',
-            client: '/api/client',
-            admin: '/api/admin'
-        }
+        message: '✅ Le serveur fonctionne !',
+        timestamp: new Date().toISOString()
+    });
+});
+
+// =============================================
+// ROUTE DE SANTÉ - OBLIGATOIRE
+// =============================================
+
+app.get('/api/health', (req, res) => {
+    res.json({
+        success: true,
+        status: '✅ OK',
+        timestamp: new Date().toISOString(),
+        environment: process.env.NODE_ENV || 'development',
+        supabase_url: process.env.SUPABASE_URL ? '✅ Configuré' : '❌ Non configuré'
     });
 });
 
@@ -60,7 +74,8 @@ app.get('/', (req, res) => {
         version: '1.0.0',
         status: 'running',
         endpoints: {
-            api: '/api',
+            test: '/test',
+            health: '/api/health',
             auth: '/api/auth',
             client: '/api/client',
             admin: '/api/admin'
@@ -92,5 +107,9 @@ app.use((err, req, res, next) => {
         message: err.message || 'Une erreur est survenue'
     });
 });
+
+// =============================================
+// EXPORTATION
+// =============================================
 
 module.exports = app;
