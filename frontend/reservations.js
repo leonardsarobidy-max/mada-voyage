@@ -1,8 +1,8 @@
 // =============================================
-// RESERVATIONS.JS - GESTION DES RÉSERVATIONS
+// RESERVATIONS.JS - GESTION COMPLÈTE DES RÉSERVATIONS
 // =============================================
 
-// ✅ URL CORRECTE DU BACKEND AVEC LA STRUCTURE backend/routes/
+// ✅ URL CORRECTE DU BACKEND (VERSION MODIFIÉE)
 const API_URL = 'https://mada-voyage-1kua7qcyz-leonardsarobidy-maxs-projects.vercel.app/api';
 
 let currentUser = null;
