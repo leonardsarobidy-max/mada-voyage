@@ -3,7 +3,7 @@
 // =============================================
 
 // ✅ URL CORRECTE DU BACKEND (VERSION MODIFIÉE)
-const API_URL = 'https://mada-voyage.onrender.com/api';
+const API_URL = window.location.origin + '/api';
 
 let currentUser = null;
 let currentToken = null;
