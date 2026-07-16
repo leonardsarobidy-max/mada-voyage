@@ -4,12 +4,56 @@
     {
       "src": "server.js",
       "use": "@vercel/node"
+    },
+    {
+      "src": "frontend/**/*.html",
+      "use": "@vercel/static"
+    },
+    {
+      "src": "frontend/**/*.js",
+      "use": "@vercel/static"
+    },
+    {
+      "src": "frontend/**/*.css",
+      "use": "@vercel/static"
+    },
+    {
+      "src": "frontend/**/*.png",
+      "use": "@vercel/static"
     }
   ],
   "routes": [
     {
-      "src": "/(.*)",
+      "src": "/api/(.*)",
       "dest": "/server.js"
+    },
+    {
+      "src": "/test",
+      "dest": "/server.js"
+    },
+    {
+      "src": "/api/health",
+      "dest": "/server.js"
+    },
+    {
+      "src": "/",
+      "dest": "/frontend/index.html"
+    },
+    {
+      "src": "/reservations.html",
+      "dest": "/frontend/reservations.html"
+    },
+    {
+      "src": "/admin-dashboard.html",
+      "dest": "/frontend/admin-dashboard.html"
+    },
+    {
+      "src": "/assets/(.*)",
+      "dest": "/frontend/assets/$1"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/frontend/$1"
     }
   ]
 }
